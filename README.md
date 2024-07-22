@@ -1,2 +1,2 @@
 # Registering_System
-That's a program that i made to put on proof the concepts that I've been learning on my studies sessions
+the concept is to be a program that can handle products registering, like product name, distributor, actual price, and promotional price.
