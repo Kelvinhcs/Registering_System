@@ -1,5 +1,26 @@
+import json
+from time import sleep
 session = [] #variable that will handle all the new registers
 explainingheader = f'{"Product Name":^28}|{"Distributor":^25}|{"Original Price (US$)":^22}|{"Discount (US$)":^19}|{"Final Price (US$)":^19}' #created just to avoid typing ALL again
+
+def error_pulling():
+        print('\033[31mBECAREFULL!!! \033[m')
+        print('\033[31mWE CANNOT LOAD THE FILE\033[m')
+        print('\033[31mTHE RETURN IS JUST A EMPTY LIST\033[m')
+        print("\033[31mEXTREMELLY RECOMENDED TO DON'T USE THE APLICATTION\033[m")
+        sleep(4)
+    
+def pull_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        error_pulling()
+        return []
+    except json.JSONDecodeError:
+        error_pulling()
+        return []
+    
 
 #display the header with the message that you want
 def header(msg):
@@ -13,7 +34,7 @@ def header(msg):
 #otherwise will asks if you wanna save or not
 #if the choice was to save, send all your sessions changes to a file
 #if its not, your discard everything you do in the session
-def wayout():
+def wayout(loadedfile):
     print('\033[31mThe user decided to stop the program...\033[m')
     print("\033[32m[1] Send the informations saved localy to the Database\033[m\n\033[31m[2] Exit without saving\033[m")
     while True:
@@ -28,8 +49,7 @@ def wayout():
             if choice in (1,2):
                 break
     if choice == 1:
-        print('\033[32mThis session was completely saved...\033[m')
-        save_on_file()
+        save_on_file(loadedfile)
         exit()
     elif choice == 2:
         print('\033[31mNothing in this session was saved...\033[m')
@@ -37,17 +57,25 @@ def wayout():
 
 
 #gonna save the inputs on the .json file
-def save_on_file():
-    pass
+def save_on_file(loadedfile, filename='data.json'):
+    try:
+        with open(filename, 'w') as file:
+            json.dump(loadedfile, file, indent=2)
+    except Exception as error:
+        print('\033[31mNothing in this session was saved...\033[m')
+        print(error)
+    else:
+        print('\033[32mThis session was completely saved...\033[m')
+        
 
 
 #validation process of inputs that triggers a function when ctrl+c or exit button is pressed
-def validation(msg, convert_type=str):
+def validation(msg, loadedfile, convert_type=str):
     while True:
         try:
             choice = convert_type(input(msg))
         except KeyboardInterrupt:
-            wayout()
+            wayout(loadedfile)
         except:
             print('\033[31mERROR! Please type a valid option...\033[m')
         else:
@@ -55,14 +83,13 @@ def validation(msg, convert_type=str):
 
 
 #bassicaly try to register a series of things on a dictionary and later to a list if its all right     
-def new_products_register():
-    global session
+def new_products_register(loadedfile):
     while True:
         #first it will read all the informations and save on a dictionary
-        name = validation('Product name: ').strip()
-        price = validation('Product price: US$', convert_type=float)
-        distributor = validation('What is the distributor?: ').strip()
-        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float)
+        name = validation('Product name: ', loadedfile).strip()
+        price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile)
+        distributor = validation('What is the distributor?: ', loadedfile).strip()
+        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float, loadedfile=loadedfile)
         DiscountMoney = price*DiscountPercentage/100
         finalprice = price - DiscountMoney
         LastTyped = {'Name': name, 'Distributor':distributor, 'Original Price':price, 'Discount Money':DiscountMoney, 'Discount Percentage':DiscountPercentage, 'Final Price':finalprice}
@@ -76,11 +103,11 @@ def new_products_register():
         #if you agree it will save on a list, if you don't it will restart the process of typing
         print('\033[32m[1] Save Locally\033[m\n\033[31m[2] Type all informations again\033[m')
         while True:
-            choice = validation('Did you want to save localy those informations?: ', convert_type=int)
+            choice = validation('Did you want to save localy those informations?: ', convert_type=int, loadedfile=loadedfile)
             if choice in (1,2):
                 break
         if choice == 1:
-            session.append(LastTyped)
+            loadedfile.append(LastTyped)
             break
         if choice == 2:
             continue
@@ -116,7 +143,7 @@ def show_session_saveds():
             
             
 #show the products again, and alow you to change the stock quantity
-def change_stock():
+def change_file_stock():
     show_past_registers()
     pass
 
