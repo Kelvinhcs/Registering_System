@@ -1,5 +1,6 @@
+import json
 #base function to save the modifications or not based on personal user choice
-#and ending imediatly dont savig if ctrl+c is press
+#and ending imediatly dont saving if ctrl+c is press
 def wayout():
     print('\033[31mThe user decided to stop the program...\033[m')
     print("[1] Save and Exit\n[2] Exit without saving")
@@ -53,6 +54,10 @@ def show_past_registers():
 
 #show the products again, and alow you to change the stock quantity
 def change_stock():
-    show_past_registers()
+    pass
+
+
+#Declare a promotional price without 
+def promotion():
     pass
 

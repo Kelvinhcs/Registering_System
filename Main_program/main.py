@@ -1,4 +1,4 @@
-import Main_program.functions as functions
+import functions 
 while True:
     print("""[1] Register new products
 [2] View current products
