@@ -8,8 +8,13 @@ while True:
 [2] View current products
 [3] Update any information
 [4] Exit the program""")
-    Main_Choice = functions.validation(msg="What's is your choice?: ", convert_type=int, loadedfile=loadedfile)
-    
+    while True:
+        Main_Choice = functions.validation(msg="What's is your choice?: ", convert_type=int, loadedfile=loadedfile, MaxLength=1)
+        if Main_Choice in (1,2,3,4):
+            break
+        else:
+            print('\033[31mUnsupported option. Please, try another one...\033[m')
+        
     #Registering Area
     if Main_Choice == 1:
         print('='*117)
@@ -19,14 +24,14 @@ while True:
     elif Main_Choice == 2:
         print()
         functions.header('Stock Management', character='*')
-        Second_Choice = functions.show_past_registers(filename)
+        Second_Choice = functions.return_file_data(filename)
         if Second_Choice == None or Second_Choice == [] or Second_Choice == '' or Second_Choice == {}:
             print('Nothing returned to us, sorry')
         else:
             print(functions.explainingheader)
             for item in Second_Choice:
-                print(f'\033[32m{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>5}% - {item["Discount Money"]:<9.2f}|{item["Final Price"]:^19.2f}\033[m')
-            functions.show_session_saveds()
+                print(f'\033[32m{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
+            functions.print_session_saveds_green()
             print('*'*117)
             sleep(2)
         print()
@@ -44,4 +49,8 @@ while True:
 
 
 #NEW FEATURES
-#allow the user to change any information
+#allow the user to change any information. Based on that, consider a separated option to just update the stock and the promotion 
+#Consider removing the welcome everytime you get back to the home page
+#Consider add a manual saving without the need to exit 
+
+#THINK LATER: Do we really need to save that many informations on the file?

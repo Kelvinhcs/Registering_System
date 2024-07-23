@@ -1,7 +1,7 @@
 import json
 from time import sleep
 session = [] #variable that will handle all the new registers
-explainingheader = f'{"Product Name":^28}|{"Stock Quantity (Units)":^24}|{"Original Price (US$)":^22}|{"Discount (US$)":^18}|{"Final Price (US$)":^19}' #created just to avoid typing ALL again
+explainingheader = f'{"Product Name":^28}|{"Stock Quantity (Units)":^24}|{"Original Price (US$)":^22}|{"Discount (US$)":^20}|{"Final Price (US$)":^19}' #created just to avoid typing ALL again
 
 
 #informs that cant be pulled the content of the master file
@@ -38,7 +38,7 @@ def header(msg, character='='):
 #everytime the ctrl+c or the exit option be selected this will me trigered    
 #if ctrl+c be pressed again it imediatly ends without saving nothing
 #otherwise will asks if you wanna save or not
-#if the choice was to save, re-write the old data on the file to our varible that have everything that was on the file plus our new data
+#if the choice was to save, re-write the old data on the file to our varible that has everything that was on the file plus our new data
 #if its not, your discard everything you do in the session
 def wayout(loadedfile):
     print('\033[31mThe user decided to stop the program...\033[m')
@@ -62,6 +62,7 @@ def wayout(loadedfile):
         print('\033[31mNothing in this session was saved...\033[m')
         exit()
 
+
 #tries to re-write the main file with our varible that have all the old data + our new sessions saving
 #THINK LATER: if nothing was changed we dont need to write it all again on the file.
 def save_on_file(loadedfile, filename='data.json'):
@@ -75,9 +76,8 @@ def save_on_file(loadedfile, filename='data.json'):
         print('\033[32mThis session was completely saved...\033[m')
         
 
-
 #validation process of inputs that triggers a function when ctrl+c or exit button is pressed
-def validation(msg, loadedfile, convert_type=str):
+def validation(msg, loadedfile, MaxLength=1, convert_type=str):
     while True:
         try:
             choice = convert_type(input(msg))
@@ -86,18 +86,22 @@ def validation(msg, loadedfile, convert_type=str):
         except:
             print('\033[31mERROR! Please type a valid option...\033[m')
         else:
-            return choice
+            if len(str(choice).strip()) >= 1 and len(str(choice).strip()) <= MaxLength:
+                return choice
+            else:
+                print(f"\033[31mSorry, that name pass the {MaxLength} limit characters, try to type it again...\033[m")
 
 
 #try to register a series of inputs on a dictionary, if its all right append it to the loaded list from the main file     
 def new_products_register(loadedfile):
     global session
     while True:
-        #first of all, get all the informations and save on a dictionary
-        name = validation('Product name: ', loadedfile).strip()
-        stock = validation('What is the stock quantity right now?: ', loadedfile, convert_type=int)
-        price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile)
-        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float, loadedfile=loadedfile)
+        
+        #first of all, get the informations and save on a dictionary
+        name = validation('Product name: ', loadedfile, MaxLength=28).strip()
+        stock = validation('What is the stock quantity right now?: ', loadedfile, convert_type=int, MaxLength=7)
+        price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile, MaxLength=7)
+        DiscountPercentage = validation('What percentage of  discount will it have now?: ', convert_type=float, loadedfile=loadedfile, MaxLength=5)
         DiscountMoney = price*DiscountPercentage/100
         finalprice = price - DiscountMoney
         LastTyped = {'Name': name, 'Stock':stock, 'Original Price':price, 'Discount Money':DiscountMoney, 'Discount Percentage':DiscountPercentage, 'Final Price':finalprice}
@@ -105,25 +109,23 @@ def new_products_register(loadedfile):
         #here the program will show the last things you wrote in a formated way
         print('='*117)
         print(explainingheader)        
-        print(f'{name:^28}|{stock:^24}|{price:^22.2f}|{DiscountPercentage:>5}% - {DiscountMoney:<9.2f}|{finalprice:^19.2f}')
+        print(f'{name:^28}|{stock:^24}|{price:^22.2f}|{DiscountPercentage:>6}% - {DiscountMoney:<10.2f}|{finalprice:^19.2f}')
         print('='*117)
         
         #if you agree it will save on loaded list from the main file, case you don't it will restart the process
         print('\033[32m[1] Save Locally\033[m\n\033[31m[2] Type all informations again\033[m')
         while True:
-            choice = validation('Did you want to save localy those informations?: ', convert_type=int, loadedfile=loadedfile)
+            choice = validation('Did you want to save localy those informations?: ', convert_type=int, loadedfile=loadedfile, MaxLength=1)
             if choice in (1,2):
                 break
         if choice == 1:
             session.append(LastTyped)
             loadedfile.append(LastTyped)
             break
-        if choice == 2:  #maybe i can delete this 2 lines
-            continue
 
 
 #return all the products that alredy have a register on the file
-def show_past_registers(FileName):
+def return_file_data(FileName):
     try:
         with open(FileName, 'r') as file:
             return json.load(file)
@@ -132,15 +134,16 @@ def show_past_registers(FileName):
     except Exception as error:
         print("I cant send you what you wan't because of this")
         print(error)
-        
-#show all the things that are registered only in this session on red
-def show_session_saveds():
+
+
+#show in red color all the things that are registered only in this session 
+def print_session_saveds_green():
     global session
     for item in session:
         if item == []: 
             continue
         else:
-            print(f'\033[31m{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>5}% - {item["Discount Money"]:<9.2f}|{item["Final Price"]:^19.2f}\033[m')
+            print(f'\033[31m{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
             
             
 #Alow the user to change any information

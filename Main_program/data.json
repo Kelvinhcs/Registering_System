@@ -22,5 +22,13 @@
     "Discount Money": 0.0,
     "Discount Percentage": 0.0,
     "Final Price": 1.0
+  },
+  {
+    "Name": "Fanta Uva 3L L+P- PROMO",
+    "Stock": 9999999,
+    "Original Price": 100000.0,
+    "Discount Money": 100000.0,
+    "Discount Percentage": 100.0,
+    "Final Price": 0.0
   }
 ]
