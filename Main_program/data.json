@@ -1,11 +1,11 @@
 [
   {
-    "Name": "Coca-Cola 2L L+P- 250ml",
-    "Stock": 1500,
-    "Original Price": 3.0,
-    "Discount Money": 0.0,
-    "Discount Percentage": 0.0,
-    "Final Price": 3.0
+    "Name": "Coca-Cola 2.5L L+P- PROMO123",
+    "Stock": 9999999,
+    "Original Price": 999999.9,
+    "Discount Money": 999999.9,
+    "Discount Percentage": 100.0,
+    "Final Price": 999999.9
   },
   {
     "Name": "Arroz Casa nostra 5Kg",

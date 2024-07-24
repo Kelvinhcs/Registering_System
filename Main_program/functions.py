@@ -43,7 +43,7 @@ def header(msg, character='='):
 def wayout(loadedfile):
     print('\033[31mThe user decided to stop the program...\033[m')
     print()
-    print("\033[32m[1] Send the informations saved localy to the Database\033[m\n\033[31m[2] Exit without saving\033[m")
+    print("\033[32m[1] Send the informations saved localy to the File\033[m\n\033[31m[2] Exit without saving\033[m")
     while True:
         try:
             choice = int(input("What's your choice?: "))
@@ -62,18 +62,27 @@ def wayout(loadedfile):
         print('\033[31mNothing in this session was saved...\033[m')
         exit()
 
-
-#tries to re-write the main file with our varible that have all the old data + our new sessions saving
+#first put the session things on our variable that hold the entire file
+#if all goes right, tries to re-write the main file with our varible that have all the old data + our new sessions saving
 #THINK LATER: if nothing was changed we dont need to write it all again on the file.
 def save_on_file(loadedfile, filename='data.json'):
+    global session
     try:
-        with open(filename, 'w') as file:
-            json.dump(loadedfile, file, indent=2)
+        for item in session:
+            loadedfile.append(item)
     except Exception as error:
-        print('\033[31mNothing in this session was saved...\033[m')
+        print('\033[31mWe cannot save the session because of this error...\033[m')
         print(error)
     else:
-        print('\033[32mThis session was completely saved...\033[m')
+        try:
+            with open(filename, 'w') as file:
+                json.dump(loadedfile, file, indent=2)
+        except Exception as error:
+            print('\033[31mNothing in this session was saved...\033[m')
+            print(error)
+        else:
+            session.clear()
+            print('\033[32mThis session was completely saved...\033[m')
         
 
 #validation process of inputs that triggers a function when ctrl+c or exit button is pressed
@@ -100,8 +109,9 @@ def new_products_register(loadedfile):
         #first of all, get the informations and save on a dictionary
         name = validation('Product name: ', loadedfile, MaxLength=28).strip()
         stock = validation('What is the stock quantity right now?: ', loadedfile, convert_type=int, MaxLength=7)
-        price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile, MaxLength=7)
-        DiscountPercentage = validation('What percentage of  discount will it have now?: ', convert_type=float, loadedfile=loadedfile, MaxLength=5)
+        price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile, MaxLength=8)
+        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float, loadedfile=loadedfile, MaxLength=5)
+        print()
         DiscountMoney = price*DiscountPercentage/100
         finalprice = price - DiscountMoney
         LastTyped = {'Name': name, 'Stock':stock, 'Original Price':price, 'Discount Money':DiscountMoney, 'Discount Percentage':DiscountPercentage, 'Final Price':finalprice}
@@ -111,6 +121,7 @@ def new_products_register(loadedfile):
         print(explainingheader)        
         print(f'{name:^28}|{stock:^24}|{price:^22.2f}|{DiscountPercentage:>6}% - {DiscountMoney:<10.2f}|{finalprice:^19.2f}')
         print('='*117)
+        print()
         
         #if you agree it will save on loaded list from the main file, case you don't it will restart the process
         print('\033[32m[1] Save Locally\033[m\n\033[31m[2] Type all informations again\033[m')
@@ -120,7 +131,8 @@ def new_products_register(loadedfile):
                 break
         if choice == 1:
             session.append(LastTyped)
-            loadedfile.append(LastTyped)
+            print('-'*117)
+            print()
             break
 
 
@@ -137,7 +149,7 @@ def return_file_data(FileName):
 
 
 #show in red color all the things that are registered only in this session 
-def print_session_saveds_green():
+def print_session_saveds_red():
     global session
     for item in session:
         if item == []: 
