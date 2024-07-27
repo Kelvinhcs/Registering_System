@@ -1,7 +1,7 @@
 import json
 from time import sleep
 session = [] #variable that will handle all the new registers
-explainingheader = f'{"Product Name":^28}|{"Stock Quantity (Units)":^24}|{"Original Price (US$)":^22}|{"Discount (US$)":^20}|{"Final Price (US$)":^19}' #created just to avoid typing ALL again
+explainingheader = f'{"Nº":<3}|{"Product Name":^28}|{"Stock Quantity (Units)":^24}|{"Original Price (US$)":^22}|{"Discount (US$)":^20}|{"Final Price (US$)":^19}' #created just to avoid typing ALL again
 
 
 #informs that cant be pulled the content of the master file
@@ -30,9 +30,9 @@ def pull_file(filename):
 
 #display the header with the message that you want
 def header(msg, character='='):
-    print(character*117)
-    print(f'{msg:^117}')
-    print(character*117)
+    print(character*121)
+    print(f'{msg:^121}')
+    print(character*121)
 
 
 #everytime the ctrl+c or the exit option be selected this will me trigered    
@@ -117,10 +117,10 @@ def new_products_register(loadedfile):
         LastTyped = {'Name': name, 'Stock':stock, 'Original Price':price, 'Discount Money':DiscountMoney, 'Discount Percentage':DiscountPercentage, 'Final Price':finalprice}
         
         #here the program will show the last things you wrote in a formated way
-        print('='*117)
+        print('='*121)
         print(explainingheader)        
-        print(f'{name:^28}|{stock:^24}|{price:^22.2f}|{DiscountPercentage:>6}% - {DiscountMoney:<10.2f}|{finalprice:^19.2f}')
-        print('='*117)
+        print(f'{'1  '}|{name:^28}|{stock:^24}|{price:^22.2f}|{DiscountPercentage:>6}% - {DiscountMoney:<10.2f}|{finalprice:^19.2f}')
+        print('='*121)
         print()
         
         #if you agree it will save on loaded list from the main file, case you don't it will restart the process
@@ -131,7 +131,7 @@ def new_products_register(loadedfile):
                 break
         if choice == 1:
             session.append(LastTyped)
-            print('-'*117)
+            print('-'*121)
             print()
             break
 

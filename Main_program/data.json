@@ -30,5 +30,13 @@
     "Discount Money": 100000.0,
     "Discount Percentage": 100.0,
     "Final Price": 0.0
+  },
+  {
+    "Name": "Civic",
+    "Stock": 1,
+    "Original Price": 5000.0,
+    "Discount Money": 0.0,
+    "Discount Percentage": 0.0,
+    "Final Price": 5000.0
   }
 ]
