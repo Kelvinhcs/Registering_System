@@ -1,8 +1,9 @@
-import functions
+import functions, json
 from time import sleep
 filename = 'data.json'
 loadedfile = functions.pull_file(filename)
 functions.header(' Welcome to our registering System ')
+
 while True:
     print("""[1] Register new products
 [2] Show past registers
@@ -42,6 +43,7 @@ while True:
 
     #Changing any previous information           
     elif Main_Choice == 3:
+        #Showing all the items in the file to let the user choose
         print()
         functions.header('Changing Section', character='-')
         Showing_Past = functions.return_file_data(filename)
@@ -53,30 +55,91 @@ while True:
                 print(f'\033[31m{number+1:<3}\033[m|{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}')
         print('-'*121)
         print()
+        
+        
+        #taking the informations
         while True:
-            option = functions.validation("Which item did you wan't to change?: ", loadedfile, MaxLength=3, convert_type=int)
-            if option > len(Showing_Past) or option < 1:
-                print("\033[31mThis option, doesn't existe, please try again...\033[m")
+            #What dict we will need to change
+            while True:
+                dict_position = functions.validation("Which item did you wan't to change?: ", loadedfile, MaxLength=3, convert_type=int) - 1
+                if dict_position > len(Showing_Past) or dict_position < 0:
+                    print("\033[31mThis option, doesn't existe, please try again...\033[m")
+                else:
+                    break
+            print()
+            
+            
+            #What item we will need to change
+            while True:
+                print(f"\033[32m[1] Name\n[2] Stock quantity\n[3] Original Price\n[4] Discount percentage\033[m")
+                op2 = functions.validation("Which item did you wan't to change?: ", loadedfile, MaxLength=3, convert_type=int)
+                if op2 < 1 or op2 > 4:
+                    print("\033[31mInvalid option, please try again...\033[m")
+                else:
+                    break
+            dict_item = functions.op2_return(op2)
+            
+            
+            
+            if dict_item[0] == 'Name':
+                new_value = functions.validation('New value: ', loadedfile, MaxLength=dict_item[1], convert_type=str)
+            elif dict_item[0] == 'Discount Percentage':
+                new_value = functions.validation('New value: ', loadedfile, MaxLength=dict_item[1], convert_type=float)
             else:
-                break
-        print()
-        print(f"\033[32m[1] Name\n[2] Stock quantity\n[3] Original Price\n[4] Discount percentage\033[m")
-        while True:
-            op2 = functions.validation("Which item did you wan't to change?: ", loadedfile, MaxLength=3, convert_type=int)
-            if op2 > 4:
-                print("\033[31mInvalid option, please try again...\033[m")
-            else:
-                break
+                new_value = functions.validation('New value: ', loadedfile, MaxLength=dict_item[1], convert_type=int)
+                
+            placeholder = loadedfile[dict_position]
+            placeholder[dict_item[0]] = new_value
+            DiscountMoney_placeholder = (placeholder['Original Price']*placeholder['Discount Percentage'])/100
+            FinalPrice_placeholder = placeholder['Original Price'] - DiscountMoney_placeholder 
+            placeholder['Discount Money'] = DiscountMoney_placeholder
+            placeholder['Final Price'] = FinalPrice_placeholder
+            
+            
+            #Showing how the change look and asking if the user wants it or no     
+            print('-'*121)
+            print(functions.explainingheader)
+            print(f'\033[31m{"1  "}\033[m|{placeholder["Name"]:^28}|{placeholder["Stock"]:^24}|{placeholder["Original Price"]:^22.2f}|{placeholder["Discount Percentage"]:>6}% - {placeholder["Discount Money"]:<10.2f}|{placeholder["Final Price"]:^19.2f}')
+            print('-'*121)
+            print()
+            print('\033[32m[1] Update the file \033[m\n\033[31m[2] Type all informations again\033[m')
+            print()
+            while True:
+                pl = functions.validation('What is your choice?: ', loadedfile, MaxLength=1, convert_type=int)
+                if pl < 1 or pl > 2:
+                    print("\033[31mInvalid option, please try again...\033[m")
+                else:
+                    break
+            if pl == 1:
+                functions.header('\033[31mPLEASE BE CAREFUL\033[m')
+                while True:
+                    pl2 = functions.validation('\033[31mThis action will save it directly to the file, Are you sure[y/s]?:\033[m ',loadedfile, MaxLength=1, convert_type=str)
+                    if pl2 in ('y', 's'):
+                        break
+                    else:
+                        print("\033[31mInvalid option, please try again...\033[m")
+                if pl2 == 'y':
+                    del loadedfile[dict_position]
+                    loadedfile.insert(dict_position, placeholder)
+                    try:
+                        with open(filename, 'w') as file:
+                            json.dump(loadedfile, file, indent=2)
+                    except Exception as error:
+                        print('\033[31mNothing in this session was saved...\033[m')
+                        print(error)
+                    else:
+                        placeholder.clear()
+                        print('\033[32mThis session was completely saved...\033[m')
+                        break
+                if pl2 == 'n':
+                    print('Restarting...')
+                    continue
+            
+            if pl == 2:
+                print('Restarting...')
         
-        
-        
-        
-        
-        
-        #give the option to selec an item based on the loaded file length
-        print()
- 
 
+        
     #A way to save the session data on the file without needing to exit the program    
     elif Main_Choice == 4:
         if functions.session == []:
@@ -110,6 +173,11 @@ while True:
 
 
 #NEW FEATURES
-#allow the user to change any information. Based on that, consider a separated option to just update the stock and the promotion 
+#QUANDO EU SALVO NA OPC 4 ele sobscreve o arquivo com a variavel session ao inves da loaded file
+#FIX THE ERROR: when there is nothing on the file using the 3 (update) option it crashes
+#FIX THE ERROR: the caracters max limit on the original price in the 1 (register) option is more then ir really is, says 8 but is 6
+#FIX THE ERROR: same on the discount, says 2 above what it is for real
+
+
 
 #THINK LATER: Do we really need to save that many informations on the file?

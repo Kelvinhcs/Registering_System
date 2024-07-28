@@ -1,42 +1,10 @@
 [
   {
-    "Name": "Coca-Cola 2.5L L+P- PROMO123",
-    "Stock": 9999999,
-    "Original Price": 999999.9,
-    "Discount Money": 999999.9,
-    "Discount Percentage": 100.0,
-    "Final Price": 999999.9
-  },
-  {
-    "Name": "Arroz Casa nostra 5Kg",
-    "Stock": 500,
-    "Original Price": 1.8,
-    "Discount Money": 0.0,
-    "Discount Percentage": 0.0,
-    "Final Price": 1.8
-  },
-  {
-    "Name": "Feij\u00e3o Caranch\u00e3o",
-    "Stock": 20,
-    "Original Price": 1.0,
-    "Discount Money": 0.0,
-    "Discount Percentage": 0.0,
-    "Final Price": 1.0
-  },
-  {
-    "Name": "Fanta Uva 3L L+P- PROMO",
-    "Stock": 9999999,
-    "Original Price": 100000.0,
-    "Discount Money": 100000.0,
-    "Discount Percentage": 100.0,
-    "Final Price": 0.0
-  },
-  {
-    "Name": "Civic",
-    "Stock": 1,
-    "Original Price": 5000.0,
-    "Discount Money": 0.0,
-    "Discount Percentage": 0.0,
-    "Final Price": 5000.0
+    "Name": "Dark Souls 2 - Copy",
+    "Stock": 0,
+    "Original Price": 35.0,
+    "Discount Money": 7.0,
+    "Discount Percentage": 20.0,
+    "Final Price": 28.0
   }
 ]

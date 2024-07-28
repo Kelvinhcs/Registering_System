@@ -151,14 +151,19 @@ def return_file_data(FileName):
 #show in red color all the things that are registered only in this session 
 def print_session_saveds_red():
     global session
-    for item in session:
+    for cont, item in enumerate(session):
         if item == []: 
             continue
         else:
-            print(f'\033[31m{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
+            print(f'\033[31m{cont:<3}|{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
             
-            
-#Alow the user to change any information
-def update_data():
-    pass
 
+def op2_return(op):
+    if op == 1:
+        return 'Name', 28
+    if op == 2:
+        return 'Stock', 24
+    if op == 3:
+        return 'Original Price', 22
+    if op == 4:
+        return 'Discount Percentage', 3
