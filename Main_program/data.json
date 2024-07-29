@@ -1,10 +1,18 @@
 [
   {
-    "Name": "DARK SOULS 2 - COPY",
+    "Name": "Dark Souls 2 - PC",
     "Stock": 1,
-    "Original Price": 5000.0,
-    "Discount Money": 2500.0,
+    "Original Price": 85.6,
+    "Discount Money": 42.8,
     "Discount Percentage": 50.0,
-    "Final Price": 2500.0
+    "Final Price": 42.8
+  },
+  {
+    "Name": "Bloodborn - PS5",
+    "Stock": 1,
+    "Original Price": 6.69,
+    "Discount Money": 0.0,
+    "Discount Percentage": 0.0,
+    "Final Price": 6.69
   }
 ]
