@@ -89,7 +89,7 @@ def save_on_file(loadedfile, filename='data.json'):
         
 
 #validation process of inputs that triggers a function when ctrl+c or exit button is pressed
-def validation(msg, loadedfile, MaxLength=1, convert_type=str, percentage=False):
+def validation(msg, loadedfile, MaxLength=1, convert_type=str, percentage=False, options=False, start=1, stop=1):
     while True:
         try:
             choice = convert_type(input(msg))
@@ -101,6 +101,12 @@ def validation(msg, loadedfile, MaxLength=1, convert_type=str, percentage=False)
             if percentage == True and choice > 100:
                 print('\033[31mERROR! This percentage is above 100%, please try again...\033[m')
                 continue
+            elif options:
+                if choice in range(start, stop+1):
+                    return choice
+                else:
+                    print('\033[31mUnsupported option. Please, try another one...\033[m')
+                    continue
             elif len(str(choice).strip()) >= 1 and len(str(choice).strip()) <= MaxLength:
                 return choice
             else:
@@ -148,19 +154,32 @@ def new_products_register(loadedfile):
 #show in red color all the things that are registered only in this session 
 def print_session_saveds_red():
     global session
-    for cont, item in enumerate(session):
+    for cont, item in enumerate(session, start=1):
         if item == []: 
             continue
         else:
             print(f'\033[31m{cont:<3}|{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
             
+            
+def print_file_data(loadedfile, msg):
+    print()
+    header(msg, character='-')
+    if loadedfile == None or loadedfile == [] or loadedfile == '' or loadedfile == {}:
+        print(f"\033[31mSorry, we can't reach the file, maybe it's because the file is empty\033[m")
+        print('-'*121)
+        print()
+    else:
+        print(explainingheader)
+        for number, item in enumerate(loadedfile, start=1):
+            print(f'\033[32m{number:<3}|{item["Name"]:^28}|{item["Stock"]:^24}|{item["Original Price"]:^22.2f}|{item["Discount Percentage"]:>6}% - {item["Discount Money"]:<10.2f}|{item["Final Price"]:^19.2f}\033[m')
+        
 
 def op2_return(op):
     if op == 1:
         return 'Name', 28
     if op == 2:
-        return 'Stock', 24
+        return 'Stock', 7
     if op == 3:
-        return 'Original Price', 22
+        return 'Original Price', 8
     if op == 4:
-        return 'Discount Percentage', 3
+        return 'Discount Percentage', 5
