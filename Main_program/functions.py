@@ -8,23 +8,26 @@ explainingheader = f'{"Nº":<3}|{"Product Name":^28}|{"Stock Quantity (Units)":^
 #if the program runs without reaching the old data, this appears
 #that will cause to erase the past data when trying to save the new informations
 def error_pulling():
-        print('\033[31mBECAREFULL!!! \033[m')
-        print('\033[31mWE CANNOT LOAD THE FILE\033[m')
+        print('\033[31mBECAREFULL!!! WE CANNOT LOAD THE FILE\033[m')
         print('\033[31mTHE RETURN IS JUST A EMPTY LIST\033[m')
-        print("\033[31mEXTREMELLY RECOMENDED TO DON'T USE THE APLICATTION\033[m")
+        print('\033[31mIF THE APLICATTION IS ALREDY BEEN USED BY YOU\033[m')
+        print("\033[31mWE EXTREMELLY RECOMMEND TO DON'T USE THE APLICATTION\033[m")
+        print("\033[31mIF IS YOUR FIRST TIME USING THE APP, PLEASE DISCONSIDER THIS INFO\033[m")
         sleep(4)
 
 
 #opens the main file and returns to a variable on the main program    
-def pull_file(filename):
+def pull_file(filename, error=True):
     try:
         with open(filename, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        error_pulling()
+        if error:
+            error_pulling()
         return []
     except json.JSONDecodeError:
-        error_pulling()
+        if error:    
+            error_pulling()
         return []
     
 
@@ -86,7 +89,7 @@ def save_on_file(loadedfile, filename='data.json'):
         
 
 #validation process of inputs that triggers a function when ctrl+c or exit button is pressed
-def validation(msg, loadedfile, MaxLength=1, convert_type=str):
+def validation(msg, loadedfile, MaxLength=1, convert_type=str, percentage=False):
     while True:
         try:
             choice = convert_type(input(msg))
@@ -95,10 +98,16 @@ def validation(msg, loadedfile, MaxLength=1, convert_type=str):
         except:
             print('\033[31mERROR! Please type a valid option...\033[m')
         else:
-            if len(str(choice).strip()) >= 1 and len(str(choice).strip()) <= MaxLength:
+            if percentage == True and choice > 100:
+                print('\033[31mERROR! This percentage is above 100%, please try again...\033[m')
+                continue
+            elif len(str(choice).strip()) >= 1 and len(str(choice).strip()) <= MaxLength:
                 return choice
             else:
-                print(f"\033[31mSorry, that name pass the {MaxLength} limit characters, try to type it again...\033[m")
+                if convert_type == float:
+                    print(f"\033[31mSorry, that name pass the {MaxLength-2} limit characters, try to type it again...\033[m")
+                else:
+                    print(f"\033[31mSorry, that name pass the {MaxLength} limit characters, try to type it again...\033[m")
 
 
 #try to register a series of inputs on a dictionary, if its all right append it to the loaded list from the main file     
@@ -110,7 +119,7 @@ def new_products_register(loadedfile):
         name = validation('Product name: ', loadedfile, MaxLength=28).strip()
         stock = validation('What is the stock quantity right now?: ', loadedfile, convert_type=int, MaxLength=7)
         price = validation('Product price: US$', convert_type=float, loadedfile=loadedfile, MaxLength=8)
-        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float, loadedfile=loadedfile, MaxLength=5)
+        DiscountPercentage = validation('What percentage of discount will it have now?: ', convert_type=float, loadedfile=loadedfile, MaxLength=5, percentage=True)
         print()
         DiscountMoney = price*DiscountPercentage/100
         finalprice = price - DiscountMoney
@@ -134,18 +143,6 @@ def new_products_register(loadedfile):
             print('-'*121)
             print()
             break
-
-
-#return all the products that alredy have a register on the file
-def return_file_data(FileName):
-    try:
-        with open(FileName, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError or FileExistsError: 
-        print('We cannot find the file to show you, sorry') 
-    except Exception as error:
-        print("I cant send you what you wan't because of this")
-        print(error)
 
 
 #show in red color all the things that are registered only in this session 
