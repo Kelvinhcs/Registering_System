@@ -2,9 +2,10 @@ import functions, json
 from time import sleep
 filename = 'data.json'
 functions.header(' Welcome to our registering System ')
-
+c = 0
 while True:
-    loadedfile = functions.pull_file(filename)
+    loadedfile = functions.pull_file(filename, counter=c)
+    c += 1
     print("""[1] Register new products
 [2] Show past registers
 [3] Update past registers

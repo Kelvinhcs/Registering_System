@@ -17,16 +17,16 @@ def error_pulling():
 
 
 #opens the main file and returns to a variable on the main program    
-def pull_file(filename, error=True):
+def pull_file(filename, counter=0, error=True):
     try:
         with open(filename, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        if error:
+        if error and counter <= 0:
             error_pulling()
         return []
     except json.JSONDecodeError:
-        if error:    
+        if error and counter <= 0:    
             error_pulling()
         return []
     
